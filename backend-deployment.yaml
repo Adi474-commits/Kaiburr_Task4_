@@ -1,0 +1,216 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: kaiburr-app
+  labels:
+    name: kaiburr-app
+    app: kaiburr-task-manager
+    environment: production
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kaiburr-backend-config
+  namespace: kaiburr-app
+  labels:
+    app: kaiburr-backend
+    component: config
+data:
+  application.properties: |
+    # Server Configuration
+    server.port=8080
+    server.servlet.context-path=/
+
+    # MongoDB Configuration
+    spring.data.mongodb.host=mongodb-service
+    spring.data.mongodb.port=27017
+    spring.data.mongodb.database=kaiburr
+    spring.data.mongodb.authentication-database=admin
+
+    # Logging Configuration
+    logging.level.com.kaiburr=INFO
+    logging.level.org.springframework=INFO
+    logging.pattern.console=%d{yyyy-MM-dd HH:mm:ss} - %msg%n
+
+    # Management Configuration (for health checks)
+    management.endpoints.web.exposure.include=health,info,metrics
+    management.endpoint.health.show-details=always
+    management.health.mongo.enabled=true
+
+    # CORS Configuration
+    cors.allowed-origins=http://localhost:30080,http://kaiburr-frontend-service
+
+  logback-spring.xml: |
+    <?xml version="1.0" encoding="UTF-8"?>
+    <configuration>
+        <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder>
+                <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</pattern>
+            </encoder>
+        </appender>
+        <root level="INFO">
+            <appender-ref ref="STDOUT" />
+        </root>
+    </configuration>
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: kaiburr-backend-secret
+  namespace: kaiburr-app
+  labels:
+    app: kaiburr-backend
+    component: secret
+type: Opaque
+data:
+  # Base64 encoded values (change these in production!)
+  # mongodb-username: admin (YWRtaW4=)
+  # mongodb-password: password123 (cGFzc3dvcmQxMjM=)
+  mongodb-username: YWRtaW4=
+  mongodb-password: cGFzc3dvcmQxMjM=
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kaiburr-backend
+  namespace: kaiburr-app
+  labels:
+    app: kaiburr-backend
+    component: backend
+    version: v1
+spec:
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  selector:
+    matchLabels:
+      app: kaiburr-backend
+  template:
+    metadata:
+      labels:
+        app: kaiburr-backend
+        component: backend
+        version: v1
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8080"
+        prometheus.io/path: "/actuator/prometheus"
+    spec:
+      serviceAccountName: kaiburr-backend-sa
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1001
+        fsGroup: 1001
+      containers:
+      - name: kaiburr-backend
+        image: BACKEND_IMAGE_PLACEHOLDER
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+          name: http
+          protocol: TCP
+        env:
+        - name: SPRING_PROFILES_ACTIVE
+          value: "kubernetes"
+        - name: SPRING_DATA_MONGODB_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: kaiburr-backend-secret
+              key: mongodb-username
+        - name: SPRING_DATA_MONGODB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: kaiburr-backend-secret
+              key: mongodb-password
+        - name: JAVA_OPTS
+          value: "-Xmx512m -Xms256m -XX:+UseContainerSupport"
+        volumeMounts:
+        - name: config-volume
+          mountPath: /app/config
+          readOnly: true
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /actuator/health/liveness
+            port: 8080
+          initialDelaySeconds: 60
+          periodSeconds: 30
+          timeoutSeconds: 10
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /actuator/health/readiness
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        startupProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 10
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: false
+          runAsNonRoot: true
+          runAsUser: 1001
+          capabilities:
+            drop:
+            - ALL
+      volumes:
+      - name: config-volume
+        configMap:
+          name: kaiburr-backend-config
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kaiburr-backend-service
+  namespace: kaiburr-app
+  labels:
+    app: kaiburr-backend
+    component: backend
+spec:
+  type: ClusterIP
+  ports:
+  - port: 8080
+    targetPort: 8080
+    protocol: TCP
+    name: http
+  selector:
+    app: kaiburr-backend
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kaiburr-backend-nodeport
+  namespace: kaiburr-app
+  labels:
+    app: kaiburr-backend
+    component: backend
+    service-type: nodeport
+spec:
+  type: NodePort
+  ports:
+  - port: 8080
+    targetPort: 8080
+    nodePort: 30088
+    protocol: TCP
+    name: http
+  selector:
+    app: kaiburr-backend

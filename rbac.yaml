@@ -1,0 +1,148 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: kaiburr-backend-sa
+  namespace: kaiburr-app
+  labels:
+    app: kaiburr-backend
+    component: serviceaccount
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: kaiburr-frontend-sa
+  namespace: kaiburr-app
+  labels:
+    app: kaiburr-frontend
+    component: serviceaccount
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: mongodb-sa
+  namespace: kaiburr-app
+  labels:
+    app: mongodb
+    component: serviceaccount
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: kaiburr-app-role
+  namespace: kaiburr-app
+rules:
+- apiGroups: [""]
+  resources: ["pods", "services", "configmaps", "secrets"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: ["apps"]
+  resources: ["deployments", "replicasets"]
+  verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: kaiburr-backend-rolebinding
+  namespace: kaiburr-app
+subjects:
+- kind: ServiceAccount
+  name: kaiburr-backend-sa
+  namespace: kaiburr-app
+roleRef:
+  kind: Role
+  name: kaiburr-app-role
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: kaiburr-frontend-rolebinding
+  namespace: kaiburr-app
+subjects:
+- kind: ServiceAccount
+  name: kaiburr-frontend-sa
+  namespace: kaiburr-app
+roleRef:
+  kind: Role
+  name: kaiburr-app-role
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: mongodb-rolebinding
+  namespace: kaiburr-app
+subjects:
+- kind: ServiceAccount
+  name: mongodb-sa
+  namespace: kaiburr-app
+roleRef:
+  kind: Role
+  name: kaiburr-app-role
+  apiGroup: rbac.authorization.k8s.io
+---
+# Pod Security Policy (if enabled in cluster)
+apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: kaiburr-psp
+  namespace: kaiburr-app
+spec:
+  privileged: false
+  allowPrivilegeEscalation: false
+  requiredDropCapabilities:
+    - ALL
+  volumes:
+    - 'configMap'
+    - 'emptyDir'
+    - 'projected'
+    - 'secret'
+    - 'downwardAPI'
+    - 'persistentVolumeClaim'
+  runAsUser:
+    rule: 'MustRunAsNonRoot'
+  seLinux:
+    rule: 'RunAsAny'
+  fsGroup:
+    rule: 'RunAsAny'
+---
+# Network Policy for security
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: kaiburr-network-policy
+  namespace: kaiburr-app
+spec:
+  podSelector: {}
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: kaiburr-app
+    - podSelector: {}
+  - from: []
+    ports:
+    - protocol: TCP
+      port: 8080
+    - protocol: TCP
+      port: 80
+  egress:
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          name: kaiburr-app
+    - podSelector: {}
+  - to: []
+    ports:
+    - protocol: TCP
+      port: 27017
+    - protocol: TCP
+      port: 8080
+    - protocol: TCP
+      port: 80
+    - protocol: TCP
+      port: 443
+    - protocol: UDP
+      port: 53

@@ -1,0 +1,67 @@
+# Multi-stage Dockerfile for Spring Boot Backend
+# Stage 1: Build stage
+FROM openjdk:17-jdk-slim AS builder
+
+# Set working directory
+WORKDIR /app
+
+# Install Maven
+RUN apt-get update && apt-get install -y maven && apt-get clean
+
+# Copy Maven configuration files
+COPY pom.xml .
+COPY mvnw .
+COPY mvnw.cmd .
+COPY .mvn .mvn
+
+# Download dependencies (this layer will be cached if pom.xml doesn't change)
+RUN mvn dependency:go-offline -B
+
+# Copy source code
+COPY src ./src
+
+# Build the application
+RUN mvn clean package -DskipTests -B
+
+# Stage 2: Runtime stage
+FROM openjdk:17-jre-slim AS runtime
+
+# Create non-root user for security
+RUN groupadd -r appuser && useradd -r -g appuser appuser
+
+# Set working directory
+WORKDIR /app
+
+# Install curl for health checks
+RUN apt-get update && \
+    apt-get install -y curl && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Copy JAR from builder stage
+COPY --from=builder /app/target/*.jar app.jar
+
+# Change ownership to non-root user
+RUN chown -R appuser:appuser /app
+USER appuser
+
+# Expose port
+EXPOSE 8080
+
+# Environment variables
+ENV JAVA_OPTS="-Xmx512m -Xms256m" \
+    SPRING_PROFILES_ACTIVE=production \
+    SERVER_PORT=8080
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD curl -f http://localhost:8080/actuator/health || exit 1
+
+# Run the application
+ENTRYPOINT ["sh", "-c", "exec java $JAVA_OPTS -jar app.jar"]
+
+# Labels for better image management
+LABEL maintainer="Adithya N Reddy" \
+      version="1.0" \
+      description="Kaiburr Task Manager Backend - Spring Boot Application" \
+      org.opencontainers.image.source="https://github.com/your-username/kaiburr-task-manager"
