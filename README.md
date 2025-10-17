@@ -257,18 +257,21 @@ Required credentials in Jenkins:
 
 The following screenshots document the complete CI-CD pipeline implementation:
 
-1. **Jenkins Dashboard** - Main Jenkins interface and job overview
-2. **Pipeline Configuration** - Job setup and parameter configuration
-3. **Credentials Management** - Security credential setup
-4. **Build Stage Execution** - Live pipeline execution view
-5. **Test Results** - Unit test reports and coverage
-6. **Docker Build Process** - Container image creation
-7. **Registry Push** - Image deployment to registry
-8. **Kubernetes Deployment** - Application deployment process
-9. **Cluster Status** - Running pods and services
-10. **Health Checks** - Application health verification
-11. **Running Application** - Live application interface
-12. **Pipeline Success** - Complete execution overview
+<img width="532" height="111" alt="Task_4_SS1" src="https://github.com/user-attachments/assets/c7ab8c56-3972-439b-a636-c355696b4bb9" />
+
+<img width="527" height="227" alt="Task_4_SS2" src="https://github.com/user-attachments/assets/561902a9-5cb3-4232-897e-cacc3a2028a1" />
+
+<img width="635" height="353" alt="Task_4_SS3" src="https://github.com/user-attachments/assets/244a31b9-d42f-4575-ae5c-5003735f6506" />
+
+<img width="623" height="95" alt="Task_4_SS4" src="https://github.com/user-attachments/assets/84109f5c-e4a4-4f13-bdca-e2871a9e6eb5" />
+
+<img width="638" height="83" alt="Task_4_SS5" src="https://github.com/user-attachments/assets/265d4357-1b83-4e94-bf2d-ef0bb6819baa" />
+
+<img width="633" height="130" alt="Task_4_SS6" src="https://github.com/user-attachments/assets/8efeb7e4-75ec-4b8f-9677-e1911adc4e7b" />
+
+<img width="641" height="149" alt="Task_4_SS7" src="https://github.com/user-attachments/assets/e92c24ef-9eba-4d1f-9a19-83094bf27f97" />
+
+
 
 
 
@@ -346,13 +349,3 @@ kubectl exec -it deployment/mongodb -n kaiburr-app -- mongosh
 ```
 
 
-
-## 👨‍💻 Author
-
-**Adithya N Reddy**
-- Email: your.email@example.com
-
-
-
-
-**Note:** This CI-CD pipeline demonstrates enterprise-grade DevOps practices including automated testing, security scanning, containerization, and orchestrated deployment. It serves as a complete example of modern software delivery automation.
