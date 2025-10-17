@@ -1,7 +1,7 @@
 # Task 4: CI-CD Pipeline with Jenkins and Kubernetes
 
 
-## 👨‍💻 Author
+## Author
 
 **Adithya N Reddy**
 - Email: adithyasnr@gmail.com
@@ -14,7 +14,7 @@
 
 This repository contains a complete CI-CD pipeline implementation for the Kaiburr Task Manager application using Jenkins, Docker, and Kubernetes. The pipeline automates the entire software delivery process from source code to production deployment.
 
-## 🏗️ Architecture
+##  Architecture
 
 ### Pipeline Flow
 ```
@@ -29,7 +29,7 @@ GitHub → Jenkins → Build & Test → Docker Build → Registry Push → Kuber
 - **Orchestration:** Kubernetes cluster
 - **Monitoring:** Health checks and logging
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 task4-cicd-pipeline/
@@ -112,7 +112,7 @@ Required credentials in Jenkins:
 - `kubeconfig-credentials`: Kubernetes configuration file
 - `mongodb-credentials`: MongoDB username/password
 
-## 🔄 Pipeline Stages
+## Pipeline Stages
 
 ### 1. Checkout
 - Clones source code from GitHub
@@ -233,25 +233,6 @@ Required credentials in Jenkins:
 - Application performance monitoring
 - Infrastructure resource monitoring
 
-## 🔒 Security
-
-### Container Security
-- Non-root user execution
-- Minimal base images
-- Vulnerability scanning
-- Security context restrictions
-
-### Kubernetes Security
-- RBAC permissions
-- Network policies
-- Pod security policies
-- Secret encryption
-
-### Pipeline Security
-- Credential management
-- Build isolation
-- Security scanning
-- Audit logging
 
 ## 📸 Screenshots
 
@@ -372,6 +353,7 @@ curl -f http://localhost:30080/health
 # Check database connection
 kubectl exec -it deployment/mongodb -n kaiburr-app -- mongosh
 ```
+
 
 
 
