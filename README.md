@@ -92,7 +92,7 @@ docker-compose up -d jenkins
 kubectl apply -f task4-cicd-pipeline/k8s/
 ```
 
-## 🔧 Configuration
+##  Configuration
 
 ### Environment Variables
 
@@ -184,7 +184,7 @@ Required credentials in Jenkins:
 - Generates performance reports
 - Sets performance baselines
 
-## 🐳 Docker Configuration
+##  Docker Configuration
 
 ### Backend Dockerfile
 - **Base Image:** OpenJDK 17 JRE Slim
@@ -198,7 +198,7 @@ Required credentials in Jenkins:
 - **Optimization:** Static asset compression, caching
 - **Health Checks:** Nginx health endpoint
 
-## ☸️ Kubernetes Deployment
+##  Kubernetes Deployment
 
 ### Resources Created
 - **Namespace:** `kaiburr-app`
@@ -234,7 +234,7 @@ Required credentials in Jenkins:
 - Infrastructure resource monitoring
 
 
-## 📸 Screenshots
+##  Screenshots
 
 The following screenshots document the complete CI-CD pipeline implementation:
 
@@ -281,7 +281,7 @@ The following screenshots document the complete CI-CD pipeline implementation:
 
 
 
-## 🚨 Troubleshooting
+## Troubleshooting
 
 ### Common Issues
 
@@ -353,6 +353,7 @@ curl -f http://localhost:30080/health
 # Check database connection
 kubectl exec -it deployment/mongodb -n kaiburr-app -- mongosh
 ```
+
 
 
 
