@@ -257,21 +257,46 @@ Required credentials in Jenkins:
 
 The following screenshots document the complete CI-CD pipeline implementation:
 
+ 1. Project Directory Structure
+    
+
 <img width="532" height="111" alt="Task_4_SS1" src="https://github.com/user-attachments/assets/c7ab8c56-3972-439b-a636-c355696b4bb9" />
+
+
+ 2. Jenkins Setup with Docker Compose
+    
 
 <img width="527" height="227" alt="Task_4_SS2" src="https://github.com/user-attachments/assets/561902a9-5cb3-4232-897e-cacc3a2028a1" />
 
+
+ 3. Kubernetes Manifests Overview
+    
+
 <img width="635" height="353" alt="Task_4_SS3" src="https://github.com/user-attachments/assets/244a31b9-d42f-4575-ae5c-5003735f6506" />
+
+
+ 4. Jenkins Setup Documentation
+    
 
 <img width="623" height="95" alt="Task_4_SS4" src="https://github.com/user-attachments/assets/84109f5c-e4a4-4f13-bdca-e2871a9e6eb5" />
 
+
+ 5. CI/CD Pipeline Features
+    
+
 <img width="638" height="83" alt="Task_4_SS5" src="https://github.com/user-attachments/assets/265d4357-1b83-4e94-bf2d-ef0bb6819baa" />
+
+
+ 6. Application Dockerization Features
+    
 
 <img width="633" height="130" alt="Task_4_SS6" src="https://github.com/user-attachments/assets/8efeb7e4-75ec-4b8f-9677-e1911adc4e7b" />
 
+
+ 7. Production-Ready Kubernetes Features
+    
+
 <img width="641" height="149" alt="Task_4_SS7" src="https://github.com/user-attachments/assets/e92c24ef-9eba-4d1f-9a19-83094bf27f97" />
-
-
 
 
 
@@ -347,5 +372,6 @@ curl -f http://localhost:30080/health
 # Check database connection
 kubectl exec -it deployment/mongodb -n kaiburr-app -- mongosh
 ```
+
 
 
