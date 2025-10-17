@@ -1,5 +1,15 @@
 # Task 4: CI-CD Pipeline with Jenkins and Kubernetes
 
+
+## 👨‍💻 Author
+
+**Adithya N Reddy**
+- Email: adithyasnr@gmail.com
+- BL.EN.U4EAC22075
+- Electronics and Computer Engineering
+- Amrita School Of Engineering Bengaluru.
+
+
 ## Overview
 
 This repository contains a complete CI-CD pipeline implementation for the Kaiburr Task Manager application using Jenkins, Docker, and Kubernetes. The pipeline automates the entire software delivery process from source code to production deployment.
@@ -42,7 +52,7 @@ task4-cicd-pipeline/
 └── README.md                       # This file
 ```
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 
@@ -206,7 +216,7 @@ Required credentials in Jenkins:
 - Secret management
 - Container security contexts
 
-## 📊 Monitoring and Observability
+## Monitoring and Observability
 
 ### Health Checks
 - **Backend:** `/actuator/health` endpoint
@@ -260,7 +270,7 @@ The following screenshots document the complete CI-CD pipeline implementation:
 11. **Running Application** - Live application interface
 12. **Pipeline Success** - Complete execution overview
 
-*See `screenshots/` directory for detailed images and `SCREENSHOT_REQUIREMENTS.md` for capture guidelines.*
+
 
 ## 🚨 Troubleshooting
 
@@ -335,72 +345,14 @@ curl -f http://localhost:30080/health
 kubectl exec -it deployment/mongodb -n kaiburr-app -- mongosh
 ```
 
-## 📈 Performance
 
-### Build Optimization
-- Parallel stage execution
-- Docker layer caching
-- Maven dependency caching
-- npm package caching
-
-### Resource Requirements
-- **Jenkins Agent:** 2 CPU, 4GB RAM
-- **Backend Pod:** 0.5 CPU, 512MB RAM
-- **Frontend Pod:** 0.1 CPU, 128MB RAM
-- **Database Pod:** 0.5 CPU, 512MB RAM
-
-## 🔄 Continuous Improvement
-
-### Metrics to Monitor
-- Build success rate
-- Build duration
-- Deployment frequency
-- Mean time to recovery
-- Test coverage
-
-### Optimization Opportunities
-- Parallel test execution
-- Advanced caching strategies
-- Blue-green deployments
-- Canary releases
-- Auto-scaling configuration
-
-## 📚 Additional Resources
-
-### Documentation
-- [Jenkins Pipeline Documentation](https://www.jenkins.io/doc/book/pipeline/)
-- [Docker Best Practices](https://docs.docker.com/develop/dev-best-practices/)
-- [Kubernetes Documentation](https://kubernetes.io/docs/)
-
-### Tools and Plugins
-- [Blue Ocean](https://www.jenkins.io/projects/blueocean/) - Modern Jenkins UI
-- [Trivy](https://github.com/aquasecurity/trivy) - Vulnerability scanner
-- [SonarQube](https://www.sonarqube.org/) - Code quality analysis
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make changes and test thoroughly
-4. Submit a pull request
-5. Update documentation as needed
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## 👨‍💻 Author
 
 **Adithya N Reddy**
-- GitHub: [@your-username](https://github.com/your-username)
 - Email: your.email@example.com
 
-## 🏷️ Version History
 
-- **v1.0.0** - Initial CI-CD pipeline implementation
-- **v1.1.0** - Added security scanning and optimization
-- **v1.2.0** - Enhanced Kubernetes deployment and monitoring
 
----
 
 **Note:** This CI-CD pipeline demonstrates enterprise-grade DevOps practices including automated testing, security scanning, containerization, and orchestrated deployment. It serves as a complete example of modern software delivery automation.
